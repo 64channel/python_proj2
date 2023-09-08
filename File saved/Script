@@ -1,7 +1,7 @@
 #imports section (DO NOT ADD ANY IMPORTS THAT HAVE TO INSTALL)
 import urllib.request as request
 import os
-
+from time import sleep
 
 #Check to see if the file already exists
 def checkexist (file_name):
@@ -24,9 +24,15 @@ url_link = 'https://s3.amazonaws.com/tcmg476/http_access_log'
 file_name = "http.txt"
 if checkexist(file_name):
     print("File already exists. Continuing to calculations")
-        
+
 else:
     try:
+        print("Download starting...")
+        n=5
+        for i in range (0,5):
+            sleep (1)
+            print(n,"Seconds till start")
+            n-=1
         link_file = request.urlopen(url_link)
         file_content = link_file.read().decode('utf-8')
         with open(file_name, 'w') as data:
