@@ -35,6 +35,7 @@ else:
             sleep (1)
             print(n,"seconds till start...")
             n-=1
+        print("The log is downloading. Give us a second...")
         link_file = request.urlopen(url_link)
         file_content = link_file.read().decode('utf-8')
         with open(file_name, 'w') as data:
