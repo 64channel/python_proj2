@@ -43,6 +43,8 @@ else:
         print("error")
 #Retrieve the file path       
 filepath = os.path.abspath(file_name)
-Datacontent = open(filepath, "r")
 
-
+# Find total number of requests.
+with open(filepath) as fp:
+    lines = len(fp.readlines())
+    print('This log contains a total of', lines, "requests.")
