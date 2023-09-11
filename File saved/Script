@@ -8,6 +8,12 @@ def checkexist (file_name):
     checked = os.path.exists(file_name)
     return checked
 
+def count_total_requests:
+   for line:
+      if "GET" in line or "POST" in line or "PUT" in line or "DELETE" in line:
+         total_requests += 1 
+         return total_requests
+
 #Variables documentation
 #url_link is the website the user inputs
 #link file is what the program downloads
