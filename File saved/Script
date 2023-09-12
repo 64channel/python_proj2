@@ -23,24 +23,52 @@ def checkexist (file_name):
 url_link = 'https://s3.amazonaws.com/tcmg476/http_access_log'
 file_name = "http.txt"
 if checkexist(file_name):
-    print("File already exists. Continuing to calculations")
+    print("Log found locally. The program will continue.")
 
 else:
     try:
-        print("Download starting...")
+        print("Log file not found. It will download automatically.")
+        print("If this is an error, make sure it's in the same directory as the program and named 'http.txt'.")
+        print("Download starting... Quit to cancel.")
         n=5
         for i in range (0,5):
             sleep (1)
-            print(n,"Seconds till start")
+            print(n,"seconds till start...")
             n-=1
+        print("The log is downloading. Give us a second...")
         link_file = request.urlopen(url_link)
         file_content = link_file.read().decode('utf-8')
         with open(file_name, 'w') as data:
             data.write(file_content)
-        print ("The data has been downloaded, the file name is ", file_name)
+        print ("The log has been downloaded. The program will continue.")
         #print(file_content)
     except:
-        print("error")
+        print("Something went wrong.")
 #Retrieve the file path       
 filepath = os.path.abspath(file_name)
-Datacontent = open(filepath, "r")
+
+# Find total number of requests.
+with open(filepath) as fp:
+    lines = len(fp.readlines())
+    print('This log contains a total of', lines, "requests.")
+
+
+#Find total requests that were made in 6 months
+i = 0
+months = 0
+while i < lines:
+  if "Oct/1994" in filepath[i]:
+    months += 1
+  elif "Sep/1994" in filepath[i]:
+    months += 1
+  elif "Aug/1994" in filepath[i]:
+    months += 1
+  elif "Jul/1994" in filepath[i]:
+    months += 1
+  elif "Jun/1994" in filepath[i]:
+    months += 1
+  elif "May/1994" in filepath[i]:
+    months += 1
+  i += 1
+
+print('The total request that were made in 6 months for this log are', months)
