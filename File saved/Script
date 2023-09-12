@@ -52,23 +52,15 @@ with open(filepath) as fp:
     lines = len(fp.readlines())
     print('This log contains a total of', lines, "requests.")
 
-
 #Find total requests that were made in 6 months
-i = 0
+months_to_count = ["Oct/1994", "Sep/1994", "Aug/1994", "Jul/1994", "Jun/1994", "May/1994"]
 months = 0
-while i < lines:
-  if "Oct/1994" in filepath[i]:
-    months += 1
-  elif "Sep/1994" in filepath[i]:
-    months += 1
-  elif "Aug/1994" in filepath[i]:
-    months += 1
-  elif "Jul/1994" in filepath[i]:
-    months += 1
-  elif "Jun/1994" in filepath[i]:
-    months += 1
-  elif "May/1994" in filepath[i]:
-    months += 1
-  i += 1
+
+with open(filepath) as fp:
+
+  for lines in fp:
+    for month in months_to_count:
+        if month in lines:
+            months += 1
 
 print('The total request that were made in 6 months for this log are', months)
