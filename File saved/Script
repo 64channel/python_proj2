@@ -1,7 +1,9 @@
 #imports section (DO NOT ADD ANY IMPORTS THAT HAVE TO INSTALL)
 import urllib.request as request
 import os
+import re
 from time import sleep
+from datetime import datetime
 
 #Check to see if the file already exists
 def checkexist (file_name):
@@ -64,3 +66,34 @@ with open(filepath) as fp:
             months += 1
 
 print('The total request that were made in 6 months for this log are', months)
+
+# WIP split
+log_pattern = r'.*\[(.+)/(.*)/(\d{4}):(.+)\] \"([A-Z]+) (.+?)( HTTP.*\"|\") ([2-5]0[0-9]) .*'
+
+log_entry_by_month = {}
+
+def extract_month(filepath):
+    match = re.match(log_pattern, filepath)
+    if match:
+        day, month, year = match.group(1), match.group(2), match.group(3)
+        date_str = f"{day}/{month}/{year}"
+        try:
+            date = datetime.strptime(date_str, "%d/%b/%Y")
+            return date.strftime("%Y-%m")  # Format as YYYY-MM
+        except ValueError:
+            pass
+    return None
+
+with open(filepath, 'r') as log_file:
+    for line in log_file:
+        month = extract_month(line)
+        if month:
+            if month not in log_entry_by_month:
+                log_entry_by_month[month] = []
+            log_entry_by_month[month].append(line)
+            
+            
+for month, entries in log_entry_by_month.items():
+    with open(f'{month}_log_entries.txt', 'w') as output_file:
+        output_file.writelines(entries)
+# WIP split end
