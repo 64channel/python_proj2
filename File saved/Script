@@ -1,7 +1,9 @@
 #imports section (DO NOT ADD ANY IMPORTS THAT HAVE TO INSTALL)
 import urllib.request as request
 import os
+import re
 from time import sleep
+from datetime import datetime
 
 #Check to see if the file already exists
 def checkexist (file_name):
@@ -64,3 +66,112 @@ with open(filepath) as fp:
             months += 1
 
 print('The total request that were made in 6 months for this log are', months)
+
+# WIP split
+log_pattern = r'.*\[(.+)/(.*)/(\d{4}):(.+)\] \"([A-Z]+) (.+?)( HTTP.*\"|\") ([2-5]0[0-9]) .*'
+
+log_entry_by_month = {}
+
+def extract_month(filepath):
+    match = re.match(log_pattern, filepath)
+    if match:
+        day, month, year = match.group(1), match.group(2), match.group(3)
+        date_str = f"{day}/{month}/{year}"
+        try:
+             date = datetime.strptime(date_str, "%d/%b/%Y")
+            return date.strftime("%Y-%m")  # Format as YYYY-MM
+        except ValueError:
+            pass
+    return None
+
+with open(filepath, 'r') as log_file:
+    for line in log_file:
+        month = extract_month(line)
+        if month:
+            if month not in log_entry_by_month:
+                log_entry_by_month[month] = []
+            log_entry_by_month[month].append(line)
+            
+            
+for month, entries in log_entry_by_month.items():
+    with open(f'{month}_log_entries.txt', 'w') as output_file:
+        output_file.writelines(entries)
+# WIP split end
+
+date = datetime.strptime("%d/%b/%Y") 
+
+Twelve_Months = {1: 'Januray', 2: 'February', 3:'March', 4:'April', 5:'May', 6:'June', 7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
+
+January = []
+February = []
+March = []
+April = []
+May = []
+June = []
+July = []
+August = []
+September = []
+October = []
+November = []
+December = []
+
+month_by_year = {1994:{'October': 0, 'November': 0,'December':0,}, 1995:{'January':0, 'February':0, 'March':0, 'April':0, 'May':0, 'June':0, 'July':0, 'August':0, 'September':0, 'October': 0}}
+
+Days_of_Week = {1:'Monday', 2:'Tuesday', 3:'Wednesday', 4:'Thursday', 5:'Friday', 6:'Saturday', 7:'Sunday'}
+
+days = {}
+weeks = {}
+
+day = Days_of_Week [date.weekday]
+if day in days:
+  days[day] += 1
+else:
+  days[day] = 1
+
+week_by_week = int(date.strftime('%W'))
+years = date.year
+if years in weeks:
+  if week_by_week in weeks[years]:
+    weeks[years][week_by_week] += 1
+  else:
+    weeks[years][week_by_week] = 1
+else:
+  weeks[years] = {week_by_week: 1}
+
+month1 = date.month1
+month_by_year[years][Twelve_Months[month1]] += 1
+
+if Twelve_Months[month1] == 'January':
+  January.append(lines)
+elif Twelve_Months[month1] == 'February':
+  February.append(lines)
+elif Twelve_Months[month1] == 'March' :
+  March.append(lines)
+elif Twelve_Months[month1] == 'April':
+  April.append(lines)
+elif Twelve_Months[month1] == 'May':
+  May.append(lines)
+elif Twelve_Months[month1] == 'June':
+  June.append(lines)
+elif Twelve_Months[month1] == 'July':
+  July.append(lines)
+elif Twelve_Months[month1] == 'August':
+  August.append(lines)
+elif Twelve_Months[month1] == 'September':
+  September.append(lines)
+elif Twelve_Months[month1] == 'October':
+  October.append(lines)
+elif Twelve_Months[month1] == 'November':
+  November.append(lines)
+elif Twelve_Months[month1] == 'December':
+  December.append(lines)
+
+print("The number of requests that were made each day: ")
+for day in days.items():
+  print(day)
+
+print("The number of requests made per month")
+for years, month1 in month_by_year.items():
+  print(years, ":")
+  for num , count in month_by_year.items():
+    print(num,':',count)
