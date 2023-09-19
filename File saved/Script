@@ -16,8 +16,8 @@ def checkexist (file_name):
 #file name is what you want it to save as, also checks to see if it is already downloaded
 #file_content is the url being decoded
 #
-#Download the file
 #uncomment these in the future if the project needs to be used again
+#these lines below allow you to download from a website you input and save it to a name you want.
 #-------------------------------------------------------------------------------
 #url_link = input("Enter the url that contains the file you want to download")
 #file_name = input("Enter a name for the file you are downloading")
