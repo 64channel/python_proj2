@@ -1,0 +1,100 @@
+import urllib.request as request
+import os
+import re
+from time import sleep
+from datetime import datetime
+
+# Check to see if the file already exists
+def checkexist(file_name):
+    checked = os.path.exists(file_name)
+    return checked
+
+url_link = 'https://s3.amazonaws.com/tcmg476/http_access_log'
+file_name = "http.txt"
+if checkexist(file_name):
+    print("Log found locally. The program will continue.")
+else:
+    try:
+        print("Log file not found. It will download automatically.")
+        print("If this is an error, make sure it's in the same directory as the program and named 'http.txt'.")
+        print("Download starting... Quit to cancel.")
+        n = 5
+        for i in range(0, 5):
+            sleep(1)
+            print(n, "seconds till start...")
+            n -= 1
+        print("The log is downloading. Give us a second...")
+        link_file = request.urlopen(url_link)
+        file_content = link_file.read().decode('utf-8')
+        with open(file_name, 'w') as data:
+            data.write(file_content)
+        print("The log has been downloaded. The program will continue.")
+    except:
+        print("Something went wrong.")
+
+filepath = os.path.abspath(file_name)
+
+with open(filepath) as fp:
+    lines = len(fp.readlines())
+    print('This log contains a total of', lines, "requests.")
+
+months_to_count = ["Oct/1994", "Sep/1994", "Aug/1994", "Jul/1994", "Jun/1994", "May/1994"]
+months = 0
+
+with open(filepath) as fp:
+    for lines in fp:
+        for month in months_to_count:
+            if month in lines:
+                months += 1
+
+print('The total request that were made in 6 months for this log are', months)
+
+log_pattern = r'.*\[(.+)/(.*)/(\d{4}):(.+)\] \"([A-Z]+) (.+?)( HTTP.*\"|\") ([2-5]0[0-9]) .*'
+
+log_entry_by_month = {}
+
+def extract_month(filepath):
+    match = re.match(log_pattern, filepath)
+    if match:
+        day, month, year = match.group(1), match.group(2), match.group(3)
+        date_str = f"{day}/{month}/{year}"
+        try:
+            date = datetime.strptime(date_str, "%d/%b/%Y")
+            return date.strftime("%Y-%m")  # Format as YYYY-MM
+        except ValueError:
+            pass
+    return None
+
+non_successful_requests = 0
+redirected_requests = 0
+
+def is_successful(code):
+    return code >= 200 and code <= 299
+
+def is_redirected(code):
+    return code >= 300 and code <= 399
+
+with open(filepath, 'r') as log_file:
+    for line in log_file:
+        month = extract_month(line)
+        if month:
+            if month not in log_entry_by_month:
+                log_entry_by_month[month] = []
+            log_entry_by_month[month].append(line)
+            match = re.match(log_pattern, line)
+            if match:
+                response_code = int(match.group(8))
+                if is_successful(response_code):
+                    continue  # Skip successful requests
+                elif is_redirected(response_code):
+                    redirected_requests += 1
+                else:
+                    non_successful_requests += 1
+
+total_requests = redirected_requests + non_successful_requests
+
+percentage_redirected = round((redirected_requests / total_requests) * 100, 2)
+percentage_non_successful = round((non_successful_requests / total_requests) * 100, 2)
+
+print('Percentage of redirected requests:', percentage_redirected, '%')
+print('Percentage of non-successful requests:', percentage_non_successful, '%')
