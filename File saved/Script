@@ -96,4 +96,40 @@ with open(filepath, 'r') as log_file:
 for month, entries in log_entry_by_month.items():
     with open(f'{month}_log_entries.txt', 'w') as output_file:
         output_file.writelines(entries)
+<<<<<<< Updated upstream
 # WIP split end
+=======
+
+
+#find most requested file
+import re
+from collections import Counter
+
+#tokenization of the text
+def tokenization_function(data):
+    text =re.findall (r'get([^"]+)http', data.lower()) 
+     
+    return text
+    
+
+#Function for finding both the most used and least
+def find(data):
+
+    text = tokenization_function(data)
+    textcount = Counter(text)
+
+    minimum = min(textcount.values())
+    least_occur = [word for word, count in textcount.items() if count == minimum]
+    
+    maximum = max(textcount.values())
+    most_occur = [word for word, count in textcount.items () if count == maximum]
+    return least_occur[0], most_occur[0]
+
+with open (filepath) as fp:
+    data = fp.read()
+
+least_occur , most_occur = find(data)
+
+print ("Most requested file : ", (most_occur))
+print ("Least requested file: ", (least_occur))
+>>>>>>> Stashed changes
