@@ -107,8 +107,8 @@ with open(filepath, 'r') as log_file:
 
 lines = redirected_requests + non_successful_requests
 
-percentage_redirected = round((redirected_requests / lines) * 100, 2)
-percentage_non_successful = round((non_successful_requests / lines) * 100, 2)
+percentage_redirected = round((redirected_requests / 726736) * 100, 2)
+percentage_non_successful = round((non_successful_requests / 726736) * 100, 2)
 
 print('Percentage of redirected requests:', percentage_redirected, '%')
 print('Percentage of non-successful requests:', percentage_non_successful, '%')
