@@ -98,7 +98,13 @@ for month, entries in log_entry_by_month.items():
         output_file.writelines(entries)
 # WIP split end
 
-date = datetime.strptime("%d/%b/%Y") 
+date_string = "24/Oct/1994"
+try:
+  date = datetime.strptime(date_string, "%d/%b/%Y")
+  formatted_date = date.strftime("%Y-%m")
+  print(formatted_date) 
+except ValueError as e:
+    print(f"Error: {e}")
 
 Twelve_Months = {1: 'Januray', 2: 'February', 3:'March', 4:'April', 5:'May', 6:'June', 7:'July', 8:'August', 9:'September', 10:'October', 11:'November', 12:'December'}
 
